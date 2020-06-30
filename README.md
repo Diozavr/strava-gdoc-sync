@@ -10,7 +10,7 @@ Sync Strava activities to training plan in Google Document
 22.05.2020 <обязательно в таком формате> | Тренировка | <сюда загрузится тренировка из Strava>
 
 2. Меню Tools - Script Editor
-3. Откроется окно с файлом `Code.gs`. Вставить туда содержимое - <code.gs>
+3. Откроется окно с файлом `Code.gs`. Вставить туда содержимое - https://raw.githubusercontent.com/Diozavr/strava-gdoc-sync/master/code.gs
 4. В этом же окне открыть меню Resources - Libraries, добавить библиотеку - Add a library: 1B7FSrk5Zi6L1rSxxTDgDEUsPzlukDsi4KGuTMorsTQHhGBzBkMun4iDF , выбрать последнюю версию (38) и сохранить.
 5. Запустить Run - Run function - install. В окне документа в меню появится пункт Strava App - Sync data
 
