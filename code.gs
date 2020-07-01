@@ -58,17 +58,22 @@ function scanTable() {
         Logger.log(activity.id);
         
         if (activity.id) {
-          //var descriprion = '<a href="https://www.strava.com/activities/'+activity.id+'">Strava</a>\n';
-          var descriprion = activity.type+' - '+  activity.name+'\n';
-          descriprion += 'Дистанция: '+(activity.distance/1000).toFixed(1)+'км, время:'+ Math.floor(activity.elapsed_time/60/60)+":"+Math.floor(activity.elapsed_time/60%60)+'ч\n';
+          //var descriprion = '<a href="https://www.strava.com/activities/'+activity.id+'">c</a>\n';
+          row.getCell(2).clear();
+          var text = row.getCell(2).editAsText();
+          
+          var title = activity.type+' - '+  activity.name+'\n';
+          var descriprion = 'Дистанция: '+(activity.distance/1000).toFixed(1)+'км, время:'+ Math.floor(activity.elapsed_time/60/60)+":"+Math.floor(activity.elapsed_time/60%60)+'ч\n';
           descriprion += 'ЧСС сред. '+ activity.average_heartrate+', макс. '+ activity.max_heartrate+'\n';
           descriprion += 'Темп сред. '+ speedToPace(activity.average_speed)+'/км, макс. '+ speedToPace(activity.max_speed)+'/км \n';
           descriprion += 'Скорость сред. '+ speedToKmh(activity.average_speed).toFixed(1)+'км/ч, макс. '+ speedToKmh(activity.max_speed).toFixed(1)+' км/ч \n';
           descriprion += '\n'+activity.description+'\n';
           
-
           
-          row.getCell(2).setText(descriprion);
+          text.setText(title)
+            .setLinkUrl('https://www.strava.com/activities/'+activity.id);
+          text
+            .appendText(descriprion);
         }
       }
     }
