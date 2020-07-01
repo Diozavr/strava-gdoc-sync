@@ -19,6 +19,18 @@ function onOpen() {
     .addItem('Sync data', 'scanTable')
     .addToUi();
 
+  var service = getStravaService();
+  //service.reset();
+  if (!service.hasAccess()) {
+    Logger.log("App has no access yet.");
+    
+    // open this url to gain authorization from github
+    var authorizationUrl = service.getAuthorizationUrl();
+    showAuthDialog(authorizationUrl);
+    
+    Logger.log("Open the following URL and re-run the script: %s",
+        authorizationUrl);
+  }
 }
 
 function scanTable() {
@@ -91,6 +103,17 @@ function getActivities(dateFrom, dateTo) {
   
   // set up the service
   var service = getStravaService();
+   if (!service.hasAccess()) {
+    Logger.log("App has no access yet.");
+    
+    // open this url to gain authorization from github
+    var authorizationUrl = service.getAuthorizationUrl();
+    showAuthDialog(authorizationUrl);
+    
+    Logger.log("Open the following URL and re-run the script: %s",
+        authorizationUrl);
+     return;
+  }
   
   if (service.hasAccess()) {
     Logger.log('App has access.');
@@ -109,12 +132,14 @@ function getActivities(dateFrom, dateTo) {
     };
     
     Logger.log('%s \n%s', endpoint + params, options);
-    var response = JSON.parse(UrlFetchApp.fetch(endpoint + params, options));
+    var httpResponse = UrlFetchApp.fetch(endpoint + params, options);
+    Logger.log(httpResponse.getResponseCode());
+    var response = JSON.parse(httpResponse);
+    
     //Logger.log(response);
     return response;
     
-  }
-  else {
+  } else {
     Logger.log("App has no access yet.");
     
     // open this url to gain authorization from github
@@ -123,6 +148,7 @@ function getActivities(dateFrom, dateTo) {
     Logger.log("Open the following URL and re-run the script: %s",
         authorizationUrl);
   }
+  
 }
 
 // call the Strava API
@@ -157,7 +183,7 @@ function getActivityDetailsAPI(id) {
     
     // open this url to gain authorization from github
     var authorizationUrl = service.getAuthorizationUrl();
-    
+    showAuthDialog(authorizationUrl);
     Logger.log("Open the following URL and re-run the script: %s",
         authorizationUrl);
   }
@@ -185,4 +211,14 @@ function authCallback(request) {
   } else {
     return HtmlService.createHtmlOutput('Denied. You can close this tab');
   }
+}
+
+function showAuthDialog(authUrl) {
+  var page = '<a href="'+authUrl+'" target="_blank">Login to Strava</a><br><br>';
+  page += '<input type="button" value="Close" onclick="google.script.host.close()" />';
+  
+  var html = HtmlService.createHtmlOutput(page)
+      .setWidth(400)
+      .setHeight(100);
+  DocumentApp.getUi().showModalDialog(html, 'Strava login');
 }
