@@ -133,7 +133,15 @@ function getActivities(dateFrom, dateTo) {
     
     Logger.log('%s \n%s', endpoint + params, options);
     var httpResponse = UrlFetchApp.fetch(endpoint + params, options);
-    Logger.log(httpResponse.getResponseCode());
+    var responseCode = httpResponse.getResponseCode()
+    Logger.log(responseCode);
+    
+    if (responseCode == 401) { // service.hasAccess() doesn't check all cases, so 401 is possible 
+      Logger.log('Need Strava authorisation');
+      showAuthDialog(service.getAuthorizationUrl());
+      return;
+    }
+    
     var response = JSON.parse(httpResponse);
     
     //Logger.log(response);
@@ -214,7 +222,7 @@ function authCallback(request) {
 }
 
 function showAuthDialog(authUrl) {
-  var page = '<a href="'+authUrl+'" target="_blank">Login to Strava</a><br><br>';
+  var page = '<a href="'+authUrl+'" target="_blank">Login to Strava</a> and try again<br><br>';
   page += '<input type="button" value="Close" onclick="google.script.host.close()" />';
   
   var html = HtmlService.createHtmlOutput(page)
